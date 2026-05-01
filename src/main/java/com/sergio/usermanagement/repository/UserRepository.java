@@ -2,7 +2,6 @@ package com.sergio.usermanagement.repository;
 
 import com.sergio.usermanagement.models.User;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
@@ -10,7 +9,6 @@ import java.util.Optional;
  * Interfaz de acceso a datos para la entidad User.
  * Proporciona las operaciones básicas CRUD gracias a heredar de JpaRepository
  */
-@Repository
 public interface UserRepository extends JpaRepository<User, Long> {
 
     /**
