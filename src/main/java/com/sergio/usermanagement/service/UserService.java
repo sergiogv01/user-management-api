@@ -1,5 +1,6 @@
 package com.sergio.usermanagement.service;
 
+import com.sergio.usermanagement.exceptions.UserNotFoundException;
 import com.sergio.usermanagement.models.User;
 import com.sergio.usermanagement.repository.UserRepository;
 import org.springframework.stereotype.Service;
@@ -61,5 +62,47 @@ public class UserService {
      */
     public List<User> getAllUsers() {
         return userRepository.findAll();
+    }
+
+    /**
+     * Busca un usuario por su ID.
+     * Si no lo encuentra, lanza una excepción.
+     *
+     * @param id ID del usuario a obtener.
+     * @return El usuario encontrado.
+     */
+    public User getUserById(Long id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException("Usuario con ID " + id + " no encontrado."));
+
+    }
+
+    /**
+     * Actualiza un usuario existente por su ID.
+     *
+     * @param id ID del usuario a actualizar.
+     * @param userDetails Nuevos valores del usuario.
+     * @return
+     */
+    public User updateUser(Long id, User userDetails) {
+        // Verificamos que exista el usuario
+        User user = getUserById(id);
+
+        // Actualizamos los campos del usuario con los nuevos valores
+        user.setUsername(userDetails.getUsername());
+        user.setEmail(userDetails.getEmail());
+        user.setPassword(userDetails.getPassword());
+
+        return userRepository.save(user);
+    }
+
+    /**
+     * Elimina el usuario por su ID.
+     *
+     * @param id ID del usuario a eliminar.
+     */
+    public void deleteUser(Long id) {
+        User user = getUserById(id);
+        userRepository.delete(user);
     }
 }
