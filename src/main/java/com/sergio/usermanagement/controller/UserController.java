@@ -1,7 +1,10 @@
 package com.sergio.usermanagement.controller;
 
+import com.sergio.usermanagement.exceptions.UserNotFoundException;
 import com.sergio.usermanagement.models.User;
 import com.sergio.usermanagement.service.UserService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -58,8 +61,9 @@ public class UserController {
      * @return Usuario obtenido mediante id.
      */
     @GetMapping("/{id}")
-    public User getUserById(@PathVariable Long id) {
-        return userService.getUserById(id);
+    public ResponseEntity<User> getUserById(@PathVariable Long id) {
+        User user = userService.getUserById(id);
+        return ResponseEntity.ok(user);
     }
 
     /**
@@ -71,8 +75,9 @@ public class UserController {
      * @return El usuario actualizado.
      */
     @PutMapping("/{id}")
-    public User updateUser(@PathVariable Long id, @RequestBody User user) {
-        return userService.updateUser(id, user);
+    public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody User user) {
+        User updatedUser = userService.updateUser(id, user);
+        return ResponseEntity.ok(updatedUser);
     }
 
     /**
@@ -82,7 +87,21 @@ public class UserController {
      * @param id Id del usuario a eliminar.
      */
     @DeleteMapping("/{id}")
-    public void deleteUser(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    /**
+     * Manejador de excepciones para UserNotFoundException.
+     * Intercepta el error cuando el usuario no existe y transforma la respuesta
+     * en un estado HTTP 404 Not Found con el mensaje de error correspondiente.
+     *
+     * @param ex La excepción capturada que contiene el mensaje de error.
+     * @return ResponseEntity con el mensaje de error en texto y el código 404.
+     */
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<String> handleUserNotFound(UserNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
     }
 }
