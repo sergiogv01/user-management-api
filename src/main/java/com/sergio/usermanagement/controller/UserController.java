@@ -95,27 +95,4 @@ public class UserController {
         userService.deleteUser(id);
         return ResponseEntity.noContent().build();
     }
-
-    /**
-     * Manejador de excepciones para UserNotFoundException.
-     * Intercepta el error cuando el usuario no existe y transforma la respuesta
-     * en un estado HTTP 404 Not Found con el mensaje de error correspondiente.
-     *
-     * @param ex La excepción capturada que contiene el mensaje de error.
-     * @return ResponseEntity con el mensaje de error en texto y el código 404.
-     */
-    @ExceptionHandler(UserNotFoundException.class)
-    public ResponseEntity<String> handleUserNotFound(UserNotFoundException ex) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
-    }
-
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<?> handleValidationExceptions(MethodArgumentNotValidException ex) {
-        Map<String, String> errors = new HashMap<>();
-
-        ex.getBindingResult().getFieldErrors().forEach((error) ->
-                errors.put(error.getField(), error.getDefaultMessage()));
-
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
-    }
 }
