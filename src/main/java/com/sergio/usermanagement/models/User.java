@@ -1,6 +1,7 @@
 package com.sergio.usermanagement.models;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 
 /**
  * Entidad que representa a un usuario dentro del sistema.
@@ -25,18 +26,23 @@ public class User {
      * Nombre de usuario único y obligatorio. No puede ser nulo.
      */
     @Column(nullable = false, unique = true)
+    @NotBlank(message = "El nombre de usuario no puede estar vacío.")
     private String username;
 
     /**
      * Dirección de correo electrónico única y obligatoria. No puede ser nula.
      */
     @Column(nullable = false, unique = true)
+    @NotBlank(message = "El email del usuario no puede estar vacío.")
+    @Email
     private String email;
 
     /**
      * Contraseña encriptada del usuario.
      */
     @Column(nullable = false)
+    @NotBlank(message = "La contraseña del usuario no puede estar vacía.")
+    @Size(min = 6, message = "La contraseña debe tener al menos 6 caracteres.")
     private String password;
 
     /**
